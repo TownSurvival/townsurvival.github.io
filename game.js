@@ -199,56 +199,55 @@ class Game{
 		});	
 	}
 	
-	playerControl(forward, turn){
+	playerControl(forward, turn) {
 		turn = -turn;
 		
-		if (forward>0.3){
-			if (this.player.action!='Walking' && this.player.action!='Running') this.player.action = 'Walking';
-		}else if (forward<-0.3){
-			if (this.player.action!='Walking Backwards') this.player.action = 'Walking Backwards';
-		}else{
-			forward = 0;
-			if (Math.abs(turn)>0.1){
-				if (this.player.action != 'Turn') this.player.action = 'Turn';
-			}else if (this.player.action!="Idle"){
-				this.player.action = 'Idle';
-				console.log(this.player.object.position.x);
-				console.log(this.player.object.position.y);
-				/*if (between(this.player.object.position.x, 4595.946237546483, 4698.982189684274)) {
-					window.location.href = 'https://google.com/';
-				  }*/
-
-				  /*if (_.inRange(this.player.object.position.x, 4595.946237546483, 4698.982189684274)) {
-					// something
-					window.location.href = 'https://google.com/';
-				  }*/
-
-				  const between = (x, min, max) => {
-					return x >= min && x <= max;
+		if (forward > 0.3) {
+		  if (this.player.action != 'Walking' && this.player.action != 'Running') {
+			this.player.action = 'Walking';
+		  }
+		} else if (forward < -0.3) {
+		  if (this.player.action != 'Walking Backwards') {
+			this.player.action = 'Walking Backwards';
+		  }
+		} else {
+		  forward = 0;
+		  if (Math.abs(turn) > 0.1) {
+			if (this.player.action != 'Turn') this.player.action = 'Turn';
+		  } else if (this.player.action != "Idle") {
+			this.player.action = 'Idle';
+			
+			console.log(this.player.object.position.x);
+			console.log(this.player.object.position.y);
+	  
+			const between = (x, min, max) => x >= min && x <= max;
+	  
+			// ✅ Load ranges and URLs from zones.json
+			fetch('zones.json')
+			  .then(res => res.json())
+			  .then(zones => {
+				const x = this.player.object.position.x;
+	  
+				for (const zone of zones) {
+				  if (between(x, zone.min, zone.max)) {
+					window.location.href = zone.url;
+					break; // stop after first match
 				  }
-				  // ...
-				 // const x = 0.002
-				  if (between(this.player.object.position.x, 4200, 4698.982189684274)) {
-					// something
-					window.location.href = 'https://game-page-phi.vercel.app/';
-					
-				  }
-				if (between(this.player.object.position.x, 2600, 3000.480350365193)) {
-					// something
-					window.location.href = 'https://uk.superteam.fun';
-					
-				  }
-			}
+				}
+			  })
+			  .catch(err => console.error("Error loading zones.json:", err));
+		  }
 		}
-		
-		if (forward==0 && turn==0){
-			delete this.player.motion;
-		}else{
-			this.player.motion = { forward, turn }; 
+	  
+		if (forward == 0 && turn == 0) {
+		  delete this.player.motion;
+		} else {
+		  this.player.motion = { forward, turn };
 		}
-		
+	  
 		this.player.updateSocket();
-	}
+	  }
+	  
 	
 	createCameras(){
 		const offset = new THREE.Vector3(0, 80, 0);
